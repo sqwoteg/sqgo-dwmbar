@@ -1,4 +1,4 @@
 # sqgo-dwmbar
 
-config - configuration package
-condig/workers - modules configuration
+config - configuration package  
+condig/workers - modules configuration package
