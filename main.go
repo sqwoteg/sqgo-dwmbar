@@ -54,14 +54,16 @@ func main() {
 	// periodically update status
 	go setStatusWorker(x, xRoot)
 
+	// channel to receive updates from modules
 	updatesChannel := make(chan model.BarModuleData)
 
+	// run every module's worker
 	for workerName, worker := range ModuleWorkers.Workers {
 		go worker(workerName, updatesChannel)
 	}
 
+	// receive updates from updatesChannel
 	var m model.BarModuleData
-
 	for {
 		m = <-updatesChannel
 
