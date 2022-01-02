@@ -5,9 +5,11 @@ import (
 	"strings"
 	"time"
 
-	"./model"
 	"github.com/BurntSushi/xgb"
 	"github.com/BurntSushi/xgb/xproto"
+	config "github.com/sqwoteg/sqgo-dwmbar/config"
+	ModuleWorkers "github.com/sqwoteg/sqgo-dwmbar/config/workers"
+	"github.com/sqwoteg/sqgo-dwmbar/model"
 )
 
 var barStatus = make(map[string]model.BarModuleData)
@@ -20,7 +22,7 @@ func setBarStatus(elements map[string]model.BarModuleData, x *xgb.Conn, xRoot xp
 		}
 	}
 
-	status := []byte(strings.Join(parts, SEPARATOR) + AFTER_STATUS_TEXT)
+	status := []byte(strings.Join(parts, config.SEPARATOR) + config.AFTER_STATUS_TEXT)
 	xproto.ChangeProperty(x, xproto.PropModeReplace, xRoot, xproto.AtomWmName, xproto.AtomString, 8, uint32(len(status)), status)
 }
 
@@ -40,11 +42,12 @@ func main() {
 	defer x.Close()
 	xRoot := xproto.Setup(x).DefaultScreen(x).Root
 
-	go setStatusWorker(x, xRoot) // periodically update status
+	// periodically update status
+	go setStatusWorker(x, xRoot)
 
 	updatesChannel := make(chan model.BarModuleData)
 
-	for workerName, worker := range moduleWorkers {
+	for workerName, worker := range ModuleWorkers.Workers {
 		go worker(workerName, updatesChannel)
 	}
 

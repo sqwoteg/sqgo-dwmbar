@@ -3,13 +3,12 @@ package datetimemodule
 import (
 	"time"
 
-	model "../../model"
+	"github.com/sqwoteg/sqgo-dwmbar/config"
+	"github.com/sqwoteg/sqgo-dwmbar/model"
 )
 
-const DATE_FORMAT = "02.01.2006 Mon 15:04"
-
 func GetFormattedTime() string {
-	return time.Now().Format(DATE_FORMAT)
+	return time.Now().Format(config.DATE_FORMAT)
 }
 
 func Worker(moduleName string, ch chan model.BarModuleData) {
