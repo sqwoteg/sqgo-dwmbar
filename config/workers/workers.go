@@ -8,6 +8,7 @@ import (
 
 var Workers = map[string]func(string, chan model.BarModuleData){
 	// "module_name": module_worker
+	// order does not matter, you can configure it in config.go file
 	"layout": layoutmodule.Worker,
 	"time":   datetimemodule.Worker,
 }

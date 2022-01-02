@@ -14,11 +14,15 @@ import (
 
 var barStatus = make(map[string]model.BarModuleData)
 
+var moduleOrderMap = make(map[string]int)
+
+var modules_len = len(config.MODULES_ORDER)
+
 func setBarStatus(elements map[string]model.BarModuleData, x *xgb.Conn, xRoot xproto.Window) {
-	var parts []string
+	var parts = make([]string, modules_len)
 	for _, module := range elements {
 		if strings.TrimSpace(module.Output) != "" {
-			parts = append(parts, module.Output)
+			parts[moduleOrderMap[module.Name]] = module.Output
 		}
 	}
 
@@ -34,6 +38,11 @@ func setStatusWorker(x *xgb.Conn, xRoot xproto.Window) {
 }
 
 func main() {
+	// generate module order map by config
+	for i, v := range config.MODULES_ORDER {
+		moduleOrderMap[v] = i
+	}
+
 	// establish connection to X server
 	x, err := xgb.NewConn()
 	if err != nil {
