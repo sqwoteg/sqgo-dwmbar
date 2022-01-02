@@ -10,6 +10,15 @@ import (
 
 func Worker(moduleName string, ch chan model.BarModuleData) {
 
+	if len(config.XKB_SWITCH_CMD) < 2 {
+		ch <- model.BarModuleData{
+			Name:              moduleName,
+			Output:            "XKB_SWITCH_CMD error",
+			ImmediatelyUpdate: false,
+		}
+		return
+	}
+
 	cmd := exec.Command(config.XKB_SWITCH_CMD[0], config.XKB_SWITCH_CMD[1:]...)
 	cmdReader, _ := cmd.StdoutPipe()
 
